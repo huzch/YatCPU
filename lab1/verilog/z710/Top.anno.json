@@ -1,0 +1,30 @@
+[
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"chisel3.experimental.EnumAnnotations$EnumDefAnnotation",
+    "typeName":"riscv.core.ALUFunctions",
+    "definition":{
+      "sll":3,
+      "sra":9,
+      "or":6,
+      "xor":5,
+      "slt":4,
+      "sub":2,
+      "add":1,
+      "sltu":10,
+      "and":7,
+      "srl":8,
+      "zero":0
+    }
+  },
+  {
+    "class":"firrtl.annotations.MemorySynthInit$"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"verilog/z710"
+  }
+]
