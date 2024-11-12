@@ -49,14 +49,14 @@ class Execute extends Module {
   // lab1(Execute)
   alu.io.func := alu_ctrl.io.alu_funct
   alu.io.op1 := Mux(
-    io.aluop1_source === 0.U,
+    io.aluop1_source === ALUOp1Source.InstructionAddress,
+    io.instruction_address,
     io.reg1_data,
-    io.instruction_address
   )
   alu.io.op2 := Mux(
-    io.aluop2_source === 0.U,
+    io.aluop2_source === ALUOp2Source.Immediate,
+    io.immediate,
     io.reg2_data,
-    io.immediate
   )
 
   // lab1(Execute) end
