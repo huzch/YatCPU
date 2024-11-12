@@ -38,6 +38,7 @@ class Execute extends Module {
   val opcode = io.instruction(6, 0)
   val funct3 = io.instruction(14, 12)
   val funct7 = io.instruction(31, 25)
+  val uimm = io.instruction(19, 15)
 
   val alu = Module(new ALU)
   val alu_ctrl = Module(new ALUControl)
@@ -73,7 +74,15 @@ class Execute extends Module {
   io.if_jump_address := io.immediate + Mux(opcode === Instructions.jalr, io.reg1_data, io.instruction_address)
   io.mem_alu_result := alu.io.result
   // lab2(CLINTCSR)
-  /*
-  io.csr_reg_write_data :=
-  */
+  io.csr_reg_write_data := MuxLookup(
+    funct3,
+    0.U,
+    IndexedSeq(
+      InstructionsTypeCSR.csrrw -> io.reg1_data,
+      InstructionsTypeCSR.csrrc -> (io.csr_reg_read_data & (~io.reg1_data).asUInt),
+      InstructionsTypeCSR.csrrs -> (io.csr_reg_read_data | io.reg1_data),
+      InstructionsTypeCSR.csrrwi -> Cat(0.U(27.W), uimm),
+      InstructionsTypeCSR.csrrci -> (io.csr_reg_read_data & (~Cat(0.U(27.W), uimm)).asUInt),
+      InstructionsTypeCSR.csrrsi -> (io.csr_reg_read_data | Cat(0.U(27.W), uimm)),
+  ))
 }
