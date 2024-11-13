@@ -17,5 +17,13 @@ package riscv.core.threestage
 import chisel3._
 
 class Control extends Module {
-  // Lab3(Flush)
+  val io = IO(new Bundle {
+    val jump_flag_ex = Input(Bool())
+    val interrupt_flag = Input(Bool())
+    val flush_if2id = Output(Bool())
+    val flush_id2ex = Output(Bool())
+  })
+
+  io.flush_if2id := io.jump_flag_ex || io.interrupt_flag
+  io.flush_id2ex := io.flush_if2id
 }

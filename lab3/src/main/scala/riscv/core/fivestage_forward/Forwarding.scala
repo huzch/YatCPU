@@ -15,6 +15,7 @@
 package riscv.core.fivestage_forward
 
 import chisel3._
+import chisel3.util._
 import riscv.Parameters
 
 object ForwardingType {
@@ -38,7 +39,14 @@ class Forwarding extends Module {
   })
 
   // Lab3(Forward)
-  io.reg1_forward_ex := 0.U
-  io.reg2_forward_ex := 0.U
+  io.reg1_forward_ex := MuxCase(ForwardingType.NoForward, Seq(
+    (io.reg_write_enable_mem && (io.rd_mem === io.rs1_ex) && (io.rd_mem =/= 0.U)) -> ForwardingType.ForwardFromMEM,
+    (io.reg_write_enable_wb && (io.rd_wb === io.rs1_ex) && (io.rd_wb =/= 0.U)) -> ForwardingType.ForwardFromWB
+  ))
+
+  io.reg2_forward_ex := MuxCase(ForwardingType.NoForward, Seq(
+    (io.reg_write_enable_mem && (io.rd_mem === io.rs2_ex) && (io.rd_mem =/= 0.U)) -> ForwardingType.ForwardFromMEM,
+    (io.reg_write_enable_wb && (io.rd_wb === io.rs2_ex) && (io.rd_wb =/= 0.U)) -> ForwardingType.ForwardFromWB
+  ))
   // Lab3(Forward) End
 }

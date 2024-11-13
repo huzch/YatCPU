@@ -220,10 +220,25 @@ class InstructionDecode extends Module {
     )
 
   // Lab3(Final)
-  io.ctrl_jump_instruction := false.B
-  io.clint_jump_flag := false.B
-  io.clint_jump_address := 0.U
-  io.if_jump_flag := false.B
-  io.if_jump_address := 0.U
+  val isJump = (opcode === Instructions.jal) || (opcode === Instructions.jalr) ||
+    ((opcode === InstructionTypes.B) && (
+      (funct3 === InstructionsTypeB.beq && io.reg1_data === io.reg2_data) ||
+      (funct3 === InstructionsTypeB.bne && io.reg1_data =/= io.reg2_data) ||
+      (funct3 === InstructionsTypeB.blt && io.reg1_data.asSInt < io.reg2_data.asSInt) ||
+      (funct3 === InstructionsTypeB.bge && io.reg1_data.asSInt >= io.reg2_data.asSInt) ||
+      (funct3 === InstructionsTypeB.bltu && io.reg1_data.asUInt < io.reg2_data.asUInt) ||
+      (funct3 === InstructionsTypeB.bgeu && io.reg1_data.asUInt >= io.reg2_data.asUInt)
+    ))
+
+  io.ctrl_jump_instruction := isJump
+
+  io.clint_jump_flag := io.interrupt_assert
+  io.clint_jump_address := io.interrupt_handler_address
+
+  io.if_jump_flag := isJump || io.interrupt_assert
+  io.if_jump_address := MuxCase(io.instruction_address, Seq(
+    (opcode === Instructions.jal) -> (io.instruction_address + (Cat(Fill(12, io.instruction(31)), io.instruction(19, 12), io.instruction(20), io.instruction(30, 21), 0.U(1.W)))),
+    (opcode === Instructions.jalr) -> (io.reg1_data + io.ex_immediate)
+  ))
   // Lab3(Final) End
 }

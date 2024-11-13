@@ -35,8 +35,8 @@ class Control extends Module {
   })
 
   // Lab3(Final)
-  io.if_flush := false.B
-  io.id_flush := false.B
+  io.if_flush := io.jump_instruction_id || io.jump_flag
+  io.id_flush := io.jump_instruction_id
   io.pc_stall := false.B
   io.if_stall := false.B
   // Lab3(Final) End

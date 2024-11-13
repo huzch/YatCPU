@@ -34,10 +34,13 @@ class Control extends Module {
   })
 
   // Lab3(Stall)
-  io.if_flush := false.B
-  io.id_flush := false.B
+  val ex_hazard = (io.rs1_id === io.rd_ex || io.rs2_id === io.rd_ex) && io.reg_write_enable_ex
+  val mem_hazard = (io.rs1_id === io.rd_mem || io.rs2_id === io.rd_mem) && io.reg_write_enable_mem
 
-  io.pc_stall := false.B
-  io.if_stall := false.B
+  io.if_flush := io.jump_flag
+  io.id_flush := io.jump_flag
+
+  io.pc_stall := ex_hazard || mem_hazard
+  io.if_stall := ex_hazard || mem_hazard
   // Lab3(Stall) End
 }

@@ -25,6 +25,12 @@ class PipelineRegister(width: Int = Parameters.DataBits, defaultValue: UInt = 0.
     val out = Output(UInt(width.W))
   })
   // Lab3(PipelineRegister)
-  io.out := 0.U
+  val reg = RegInit(UInt(width.W), defaultValue)
+  when(io.stall) {
+    reg := io.in
+  }.elsewhen(io.flush) {
+    reg := defaultValue
+  }
+  io.out := reg
   // Lab3(PipelineRegister) End
 }
