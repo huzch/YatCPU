@@ -68,7 +68,7 @@ class CSR extends Module {
   // If the pipeline and the CLINT are going to read and write the CSR at the same time, let the pipeline write first.
   // This is implemented in a single cycle by passing reg_write_data_ex to clint and writing the data from the CLINT to the CSR.
   io.reg_read_data := MuxLookup(io.reg_read_address_id, 0.U, regLUT)
-  io.debug_reg_read_data := MuxLookup(io.debug_reg_read_address, 0.U,regLUT)
+  io.debug_reg_read_data := MuxLookup(io.debug_reg_read_address, 0.U, regLUT)
 
   //lab2(CLINTCSR)
   //what data should be passed from csr to clint (Note: what should clint see is the next state of the CPU)
