@@ -60,14 +60,8 @@ git clone https://github.com/Tokisakix/2023-fall-yatcpu-repo //半成品，用�
 
 ### 1.3 运行镜像，生成容器
 
-```bash
-//首次运行，本地不存在镜像，会自动拉取镜像
-//运行成品yatcpu容器
-docker run -it --rm howardlau1999/yatcpu
-```
-
 1. 拉取完镜像之后，安装 Dev Containers 插件
-2. 点击左下角打开远程窗口，选择在容器中打开文件夹，选择刚刚拉取的代码仓库即可
+2. 点击左侧栏打开远程资源管理器，在上方选择开发容器，选择在容器中打开文件夹，选择刚刚拉取的代码仓库即可
 
 ### 1.4 sbt测试
 
@@ -98,7 +92,7 @@ git clone https://github.com/Tokisakix/2023-fall-yatcpu-repo //半成品，用�
 ### 2.3 运行镜像，生成容器
 
 1. 进入 VSCode 后，安装 Dev Containers 插件
-2. 点击左下角打开远程窗口，选择在容器中打开文件夹（这时 Docker 必须是启动的），选择刚刚拉取的代码仓库即可
+2. 点击左侧栏打开远程资源管理器，在上方选择开发容器，选择在容器中打开文件夹（这时 Docker 必须是启动的），选择刚刚拉取的代码仓库即可
 
 ### 2.4 sbt测试
 
