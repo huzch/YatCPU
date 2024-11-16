@@ -27,19 +27,20 @@ sudo apt-get install -y \
     lsb-release
 
 # 创建 keyrings 目录并添加 Docker GPG 密钥
-sudo mkdir -p /etc/apt/keyrings
+sudo mkdir -m 0755 -p /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
 # 配置 Docker 仓库源
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+// 若无法连接 download.docker.com ，则替换成 mirrors.aliyun.com/docker-ce
       
 # 更新 apt 包索引并安装 Docker
 sudo apt-get update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-//自动启动配置
 # 配置加载
 sudo systemctl daemon-reload
 # 启动服务
