@@ -25,5 +25,5 @@ class Control extends Module {
   })
 
   io.flush_if2id := io.jump_flag_ex || io.interrupt_flag
-  io.flush_id2ex := io.flush_if2id
+  io.flush_id2ex := io.jump_flag_ex || io.interrupt_flag
 }

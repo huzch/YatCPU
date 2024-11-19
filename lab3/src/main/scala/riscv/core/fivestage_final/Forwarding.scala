@@ -43,23 +43,27 @@ class Forwarding extends Module {
 
   // Lab3(Final)
   io.reg1_forward_id := MuxCase(ForwardingType.NoForward, Seq(
-    (io.reg_write_enable_mem && io.rd_mem === io.rs1_id && io.rd_mem =/= 0.U) -> ForwardingType.ForwardFromMEM,
-    (io.reg_write_enable_wb && io.rd_wb === io.rs1_id && io.rd_wb =/= 0.U) -> ForwardingType.ForwardFromWB
-  ))
+      (io.reg_write_enable_mem && (io.rd_mem === io.rs1_id) && (io.rd_mem =/= 0.U)) -> ForwardingType.ForwardFromMEM,
+      (io.reg_write_enable_wb && (io.rd_wb === io.rs1_id) && (io.rd_wb =/= 0.U)) -> ForwardingType.ForwardFromWB
+    )
+  )
 
   io.reg2_forward_id := MuxCase(ForwardingType.NoForward, Seq(
-    (io.reg_write_enable_mem && io.rd_mem === io.rs2_id && io.rd_mem =/= 0.U) -> ForwardingType.ForwardFromMEM,
-    (io.reg_write_enable_wb && io.rd_wb === io.rs2_id && io.rd_wb =/= 0.U) -> ForwardingType.ForwardFromWB
-  ))
+      (io.reg_write_enable_mem && (io.rd_mem === io.rs2_id) && (io.rd_mem =/= 0.U)) -> ForwardingType.ForwardFromMEM,
+      (io.reg_write_enable_wb && (io.rd_wb === io.rs2_id) && (io.rd_wb =/= 0.U)) -> ForwardingType.ForwardFromWB
+    )
+  )
 
   io.reg1_forward_ex := MuxCase(ForwardingType.NoForward, Seq(
-    (io.reg_write_enable_mem && io.rd_mem === io.rs1_ex && io.rd_mem =/= 0.U) -> ForwardingType.ForwardFromMEM,
-    (io.reg_write_enable_wb && io.rd_wb === io.rs1_ex && io.rd_wb =/= 0.U) -> ForwardingType.ForwardFromWB
-  ))
+      (io.reg_write_enable_mem && (io.rd_mem === io.rs1_ex) && (io.rd_mem =/= 0.U)) -> ForwardingType.ForwardFromMEM,
+      (io.reg_write_enable_wb && (io.rd_wb === io.rs1_ex) && (io.rd_wb =/= 0.U)) -> ForwardingType.ForwardFromWB
+    )
+  )
 
   io.reg2_forward_ex := MuxCase(ForwardingType.NoForward, Seq(
-    (io.reg_write_enable_mem && io.rd_mem === io.rs2_ex && io.rd_mem =/= 0.U) -> ForwardingType.ForwardFromMEM,
-    (io.reg_write_enable_wb && io.rd_wb === io.rs2_ex && io.rd_wb =/= 0.U) -> ForwardingType.ForwardFromWB
-  ))
+      (io.reg_write_enable_mem && (io.rd_mem === io.rs2_ex) && (io.rd_mem =/= 0.U)) -> ForwardingType.ForwardFromMEM,
+      (io.reg_write_enable_wb && (io.rd_wb === io.rs2_ex) && (io.rd_wb =/= 0.U)) -> ForwardingType.ForwardFromWB
+    )
+  )
   // Lab3(Final) End
 }

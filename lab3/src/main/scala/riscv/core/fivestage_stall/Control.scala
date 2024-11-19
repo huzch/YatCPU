@@ -34,13 +34,30 @@ class Control extends Module {
   })
 
   // Lab3(Stall)
-  val ex_hazard = (io.rs1_id === io.rd_ex || io.rs2_id === io.rd_ex) && io.reg_write_enable_ex
-  val mem_hazard = (io.rs1_id === io.rd_mem || io.rs2_id === io.rd_mem) && io.reg_write_enable_mem
+  val id_hazard = (io.reg_write_enable_ex && io.rd_ex =/= 0.U && (io.rs1_id === io.rd_ex || io.rs2_id === io.rd_ex)) ||
+                  (io.reg_write_enable_mem && io.rd_mem =/= 0.U && (io.rs1_id === io.rd_mem || io.rs2_id === io.rd_mem))
 
-  io.if_flush := io.jump_flag
-  io.id_flush := io.jump_flag
+  when(io.jump_flag) {
+    io.if_flush := true.B
+    io.id_flush := true.B
+    io.pc_stall := false.B
+    io.if_stall := false.B
+  }.elsewhen(id_hazard) {
+    io.if_flush := false.B
+    io.id_flush := true.B
+    io.pc_stall := true.B
+    io.if_stall := true.B
+  }.otherwise {
+    io.if_flush := false.B
+    io.id_flush := false.B
+    io.pc_stall := false.B
+    io.if_stall := false.B
+  }
 
-  io.pc_stall := ex_hazard || mem_hazard
-  io.if_stall := ex_hazard || mem_hazard
+  // io.if_flush := io.jump_flag
+  // io.id_flush := io.jump_flag || id_hazard
+  // io.pc_stall := id_hazard && !io.jump_flag
+  // io.if_stall := id_hazard && !io.jump_flag
+  
   // Lab3(Stall) End
 }

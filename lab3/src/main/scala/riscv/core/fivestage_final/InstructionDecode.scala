@@ -215,30 +215,41 @@ class InstructionDecode extends Module {
   io.ex_csr_address := io.instruction(31, 20)
   io.ex_csr_write_enable := (opcode === Instructions.csr) && (
     funct3 === InstructionsTypeCSR.csrrw || funct3 === InstructionsTypeCSR.csrrwi ||
-      funct3 === InstructionsTypeCSR.csrrs || funct3 === InstructionsTypeCSR.csrrsi ||
-      funct3 === InstructionsTypeCSR.csrrc || funct3 === InstructionsTypeCSR.csrrci
-    )
+    funct3 === InstructionsTypeCSR.csrrs || funct3 === InstructionsTypeCSR.csrrsi ||
+    funct3 === InstructionsTypeCSR.csrrc || funct3 === InstructionsTypeCSR.csrrci
+  )
 
   // Lab3(Final)
-  val isJump = (opcode === Instructions.jal) || (opcode === Instructions.jalr) ||
-    ((opcode === InstructionTypes.B) && (
-      (funct3 === InstructionsTypeB.beq && io.reg1_data === io.reg2_data) ||
-      (funct3 === InstructionsTypeB.bne && io.reg1_data =/= io.reg2_data) ||
-      (funct3 === InstructionsTypeB.blt && io.reg1_data.asSInt < io.reg2_data.asSInt) ||
-      (funct3 === InstructionsTypeB.bge && io.reg1_data.asSInt >= io.reg2_data.asSInt) ||
-      (funct3 === InstructionsTypeB.bltu && io.reg1_data.asUInt < io.reg2_data.asUInt) ||
-      (funct3 === InstructionsTypeB.bgeu && io.reg1_data.asUInt >= io.reg2_data.asUInt)
-    ))
+  val reg1_data = MuxLookup(io.reg1_forward, io.reg1_data, Seq(
+      ForwardingType.ForwardFromMEM -> io.forward_from_mem,
+      ForwardingType.ForwardFromWB -> io.forward_from_wb
+    )
+  )
 
-  io.ctrl_jump_instruction := isJump
+  val reg2_data = MuxLookup(io.reg2_forward, io.reg2_data, Seq(
+      ForwardingType.ForwardFromMEM -> io.forward_from_mem,
+      ForwardingType.ForwardFromWB -> io.forward_from_wb
+    )
+  )
 
-  io.clint_jump_flag := io.interrupt_assert
-  io.clint_jump_address := io.interrupt_handler_address
+  io.ctrl_jump_instruction := (opcode === Instructions.jal) || (opcode === Instructions.jalr) || (opcode === InstructionTypes.B)
+  val instruction_jump_flag = (opcode === Instructions.jal) || (opcode === Instructions.jalr) ||
+    ((opcode === InstructionTypes.B) && MuxLookup(funct3, false.B, Seq(
+          InstructionsTypeB.beq -> (reg1_data === reg2_data),
+          InstructionsTypeB.bne -> (reg1_data =/= reg2_data),
+          InstructionsTypeB.blt -> (reg1_data.asSInt < reg2_data.asSInt),
+          InstructionsTypeB.bge -> (reg1_data.asSInt >= reg2_data.asSInt),
+          InstructionsTypeB.bltu -> (reg1_data.asUInt < reg2_data.asUInt),
+          InstructionsTypeB.bgeu -> (reg1_data.asUInt >= reg2_data.asUInt)
+        )
+      )
+    )
 
-  io.if_jump_flag := isJump || io.interrupt_assert
-  io.if_jump_address := MuxCase(io.instruction_address, Seq(
-    (opcode === Instructions.jal) -> (io.instruction_address + (Cat(Fill(12, io.instruction(31)), io.instruction(19, 12), io.instruction(20), io.instruction(30, 21), 0.U(1.W)))),
-    (opcode === Instructions.jalr) -> (io.reg1_data + io.ex_immediate)
-  ))
+  val instruction_jump_address = io.ex_immediate + Mux(opcode === Instructions.jalr, reg1_data, io.instruction_address)
+
+  io.clint_jump_flag := instruction_jump_flag
+  io.clint_jump_address := instruction_jump_address
+  io.if_jump_flag := io.interrupt_assert || instruction_jump_flag
+  io.if_jump_address := Mux(io.interrupt_assert, io.interrupt_handler_address, instruction_jump_address)
   // Lab3(Final) End
 }

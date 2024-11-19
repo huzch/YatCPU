@@ -32,6 +32,8 @@ class CPU extends Module {
   val csr_regs = Module(new CSR)
 
   // Lab3(Flush)
+  ctrl.io.jump_flag_ex := ex.io.if_jump_flag
+  ctrl.io.interrupt_flag := io.interrupt_flag
   if2id.io.flush := ctrl.io.flush_if2id
   id2ex.io.flush := ctrl.io.flush_id2ex
   // Lab3(Flush) End
