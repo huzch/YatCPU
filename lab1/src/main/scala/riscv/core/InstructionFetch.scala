@@ -42,7 +42,7 @@ class InstructionFetch extends Module {
       pc := pc + 4.U
     }
 
-    // la1(InstructionFetch) end
+    // lab1(InstructionFetch) end
   }.otherwise{
     pc := pc
     io.instruction := 0x00000013.U

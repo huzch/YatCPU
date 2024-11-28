@@ -79,10 +79,10 @@ class Execute extends Module {
     0.U,
     IndexedSeq(
       InstructionsTypeCSR.csrrw -> io.reg1_data,
-      InstructionsTypeCSR.csrrc -> (io.csr_reg_read_data & (~io.reg1_data).asUInt),
+      InstructionsTypeCSR.csrrc -> (io.csr_reg_read_data & ~io.reg1_data),
       InstructionsTypeCSR.csrrs -> (io.csr_reg_read_data | io.reg1_data),
       InstructionsTypeCSR.csrrwi -> Cat(0.U(27.W), uimm),
-      InstructionsTypeCSR.csrrci -> (io.csr_reg_read_data & (~Cat(0.U(27.W), uimm)).asUInt),
-      InstructionsTypeCSR.csrrsi -> (io.csr_reg_read_data | Cat(0.U(27.W), uimm)),
+      InstructionsTypeCSR.csrrci -> (io.csr_reg_read_data & ~Cat(0.U(27.W), uimm)),
+      InstructionsTypeCSR.csrrsi -> (io.csr_reg_read_data | Cat(0.U(27.W), uimm))
   ))
 }
