@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package board.z710
+package board.z710v1_3
 
 import chisel3._
 import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
@@ -26,17 +26,16 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
     val tx = Output(Bool())
     val rx = Input(Bool())
 
-    val led = Output(Bool())  // z710 has few LEDs, use one for running indicator
+    val led = Output(Bool())
   })
 
-  // original ref clock is 125MHz, divided in clock_control.v by 5 to avoid total negative slack too large
-  val clock_freq = 25_000_000 
+  val clock_freq = 50_000_000
 
   val mem = Module(new Memory(Parameters.MemorySizeInWords))
   // val hdmi_display = Module(new HDMIDisplay)
   // val display = Module(new CharacterDisplay)
   val timer = Module(new Timer)
-  val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200)) 
+  val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200))
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle
@@ -98,7 +97,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 
 object VerilogGenerator extends App {
   (new ChiselStage).execute(
-    Array("-X", "verilog", "-td", "verilog/z710"), 
+    Array("-X", "verilog", "-td", "verilog/z710v1.3"), 
     Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))   // program to run on CPU
   )
 }

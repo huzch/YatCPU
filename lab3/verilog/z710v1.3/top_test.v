@@ -30,7 +30,7 @@ module top_test(
     
     wire io_led, io_tx;
     
-    localparam CLK_PERIOD = 20;
+    localparam CLK_PERIOD = 10;
     initial begin
         clock = 1'b0;
         forever #( CLK_PERIOD / 2 ) clock = ~clock;
@@ -39,9 +39,9 @@ module top_test(
     
     initial begin
         reset = 1;  // need a down edge to init all components
-        #21  reset = 0;  // NOTE!!: must happen together with clock down edge!
+        #(CLK_PERIOD)  reset = 0;  // NOTE!!: must happen together with clock down edge!
     end
     
-    Top mytop(clock, reset, io_led, io_tx, constant_zero);
+    Top mytop(clock, reset, io_tx, constant_zero, io_led );
     
 endmodule
