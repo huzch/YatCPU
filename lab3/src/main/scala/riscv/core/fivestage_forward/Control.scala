@@ -32,6 +32,8 @@ class Control extends Module {
   })
 
   // Lab3(Forward)
+  //若当前译码的指令依赖的操作数的来源为普通指令，无需阻塞，可以无缝转发
+  //若当前译码的指令依赖的操作数的来源为load指令，需要阻塞到MEM阶段转发读取
   val id_hazard = io.memory_read_enable_ex && io.rd_ex =/= 0.U && (io.rs1_id === io.rd_ex || io.rs2_id === io.rd_ex)
 
   when(io.jump_flag) {

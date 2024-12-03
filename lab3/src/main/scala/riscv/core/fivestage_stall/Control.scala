@@ -34,6 +34,7 @@ class Control extends Module {
   })
 
   // Lab3(Stall)
+  //若当前译码的指令依赖的操作数的来源为所有指令（无论是普通指令还是load指令），都需要阻塞到WB阶段读取
   val id_hazard = (io.reg_write_enable_ex && io.rd_ex =/= 0.U && (io.rs1_id === io.rd_ex || io.rs2_id === io.rd_ex)) ||
                   (io.reg_write_enable_mem && io.rd_mem =/= 0.U && (io.rs1_id === io.rd_mem || io.rs2_id === io.rd_mem))
 
